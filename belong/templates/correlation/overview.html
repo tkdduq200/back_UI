@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <h2>상관관계 분석</h2>
+
+    <!-- GU 선택 폼 -->
+    <form method="POST" class="mb-4">
+        {{ form.hidden_tag() }}
+
+        <label>{{ form.gu.label }}</label>
+        {{ form.gu(class="form-select", style="max-width:300px;") }}
+
+        <div class="mt-2">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </form>
+
+    {% if results %}
+        <div class="row">
+
+            <!-- 좌측 그래프: 단독주택 1인가구수 vs 65세 이상 -->
+            <div class="col-md-6">
+                <h4>{{ results.housing.title }}</h4>
+                <canvas id="housingChart"></canvas>
+            </div>
+
+            <!-- 우측 그래프: 1인가구 비율 vs 65세 이상 -->
+            <div class="col-md-6">
+                <h4>{{ results.ratio.title }}</h4>
+                <canvas id="ratioChart"></canvas>
+            </div>
+
+        </div>
+
+        <!-- Chart.js (static/chart.min.js) -->
+        <script src="{{ url_for('static', filename='chart.min.js') }}"></script>
+
+        <script>
+            // 좌측 그래프 데이터
+            const housingLabels = ["단독주택_1인가구수(합)", "65세_이상_인구(합)"];
+            const housingData = [
+                Number("{{ results.housing.y_values.housing }}"),
+                Number("{{ results.housing.y_values.senior }}")
+            ];
+
+            const housingCtx = document.getElementById('housingChart');
+            new Chart(housingCtx, {
+                type: 'bar',
+                data: {
+                    labels: housingLabels,
+                    datasets: [{
+                        label: '값',
+                        data: housingData
+                    }]
+                }
+            });
+
+            // 우측 그래프 데이터
+            const ratioLabels = ["1인가구_비율(평균)", "65세_이상_인구(합)"];
+            const ratioData = [
+                Number("{{ results.ratio.y_values.ratio }}"),
+                Number("{{ results.ratio.y_values.senior }}")
+            ];
+
+            const ratioCtx = document.getElementById('ratioChart');
+            new Chart(ratioCtx, {
+                type: 'bar',
+                data: {
+                    labels: ratioLabels,
+                    datasets: [{
+                        label: '값',
+                        data: ratioData
+                    }]
+                }
+            });
+        </script>
+
+    {% endif %}
+</div>
+{% endblock %}

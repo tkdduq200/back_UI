@@ -1,4 +1,3 @@
-# belong/__init__.py
 
 from flask import Flask
 
@@ -9,15 +8,11 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object("belong.config")
 
-    # --------------------------
     # 핵심: DB & Migration 연결
-    # --------------------------
     db.init_app(app)
     migrate.init_app(app, db)
 
-    # --------------------------
     # Blueprint 등록
-    # --------------------------
     from belong.views.auth_views import bp as auth_bp
     from belong.views.main_views import bp as main_bp
     from belong.views.question_views import bp as question_bp

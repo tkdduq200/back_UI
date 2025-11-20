@@ -1,3 +1,5 @@
+# belong/views/correlation_views.py
+
 from flask import Blueprint, render_template
 from belong.forms.correlation_forms import CorrelationOverviewForm
 from belong.services.correlation_service import CorrelationService
@@ -15,7 +17,7 @@ GU_CHOICES = [
     ("중랑구","중랑구")
 ]
 
-@bp.route("/overview", methods=["GET","POST"])
+@bp.route("/overview", methods=["GET", "POST"])
 def overview():
     form = CorrelationOverviewForm()
     form.gu.choices = GU_CHOICES

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-3">
+
+    <table class="table">
+        <thead>
+        <tr class="thead-dark">
+            <th>번호</th>
+            <th>제목</th>
+            <th>작성일시</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% if question_list %}
+            {% for question in question_list %}
+            <tr>
+                <td>{{ loop.revindex }}</td>
+                <td>
+                    <a href="{{ url_for('question.detail', question_id=question.id) }}">
+                        {{ question.subject }}
+                    </a>
+                    {% if question.answer_set|length > 0 %}
+                        <span class="text-danger small ml-2">{{ question.answer_set|length }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ question.create_date }}</td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="3">질문이 없습니다.</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+
+    <!-- 간단 페이지 네비게이션 -->
+    <div class="d-flex justify-content-center mb-3">
+        {% if page > 1 %}
+            <a class="btn btn-secondary mx-2" href="?page={{ page-1 }}">이전</a>
+        {% endif %}
+
+        <span class="mx-2">현재 페이지: {{ page }}</span>
+
+        {% if question_list|length == per_page %}
+            <a class="btn btn-secondary mx-2" href="?page={{ page+1 }}">다음</a>
+        {% endif %}
+    </div>
+
+    <a href="{{ url_for('question.create') }}" class="btn btn-primary">질문 등록하기</a>
+</div>
+{% endblock %}
